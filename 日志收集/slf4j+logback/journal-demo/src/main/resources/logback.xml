@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+    <!--项目名称-->
+    <property name="SYSTEM" value="test" />
+    <!--项目同层目录-->
+    <property name="USER_HOME" value="logs/${SYSTEM}" />
+    <property name="LOG_MSG" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] [%c:%method:%line] - %m%n" />
+    <!--rad红  yellow黄 green绿 blue蓝  pink粉 white白 black黑 -->
+    <property name="LOG_CONSOLE" value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %red([%t]) %black([%X{THREAD_ID}]) [%boldMagenta(%c):%boldGreen(%method):%cyan(%line)] - %blue(%m%n)"/>
+    <!--来设置上下文名称，每个logger都关联到logger上下文，默认上下文名称为default。但可以使用<contextName>设置成其他名字，用于区分不同应用程序的记录。一旦设置，不能修改。-->
+    <contextName>${SYSTEM}</contextName>
+    <!-- <appender>是<configuration>的子节点，是负责写日志的组件。有两个必要属性name和class。name指定appender名称，class指定appender的实现类。 -->
+    <!--控制台输出日志信息-->
+    <appender name="CONSOLE-LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_CONSOLE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 输出error级别的日志到error.log文件中 -->
+    <appender name="ERROR-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${USER_HOME}/${SYSTEM}-error.log</file>
+        <!-- 对记录事件进行格式化。 -->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${LOG_MSG}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--过滤 Error-->
+            <level>ERROR</level>
+            <!--匹配到就禁止-->
+            <onMatch>ACCEPT</onMatch>
+            <!--没有匹配到就允许-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 按天回滚 daily -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+            <fileNamePattern>${USER_HOME}/${SYSTEM}-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--只保留最近30天的日志-->
+            <maxHistory>30</maxHistory>
+            <!-- 除按日志记录之外，还配置了日志文件不能超过20M，若超过20M，日志文件会以索引0开始，命名日志文件，例如log-error-2013-12-21.0.log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>20MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <!-- 输出info级别的日志到error.log文件中 -->
+    <appender name="INFO-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${USER_HOME}/${SYSTEM}-info.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${LOG_MSG}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--过滤 INFO-->
+            <level>INFO</level>
+            <!--匹配到就禁止-->
+            <onMatch>ACCEPT</onMatch>
+            <!--没有匹配到就允许-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 按天回滚 daily -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- log.dir 在maven profile里配置 -->
+            <FileNamePattern>${USER_HOME}/${SYSTEM}-info.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!-- 日志最大的历史 30天 -->
+            <maxHistory>30</maxHistory>
+            <!-- 除按日志记录之外，还配置了日志文件不能超过20M，若超过20M，日志文件会以索引0开始，命名日志文件，例如log-error-2013-12-21.0.log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>20MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <!-- 输出debug级别的日志到error.log文件中 -->
+    <appender name="DEBUG-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${USER_HOME}/${SYSTEM}-debug.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${LOG_MSG}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--过滤 debug-->
+            <level>DEBUG</level>
+            <!--匹配到就禁止-->
+            <onMatch>ACCEPT</onMatch>
+            <!--没有匹配到就允许-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 按天回滚 daily -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- log.dir 在maven profile里配置 -->
+            <FileNamePattern>${USER_HOME}/${SYSTEM}-debug.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!-- 日志最大的历史 30天 -->
+            <maxHistory>30</maxHistory>
+            <!-- 除按日志记录之外，还配置了日志文件不能超过20M，若超过20M，日志文件会以索引0开始，命名日志文件，例如log-error-2013-12-21.0.log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>20MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <!-- 特殊的<logger>元素，是根logger。只有一个level属性，应为已经被命名为"root".
+       level:设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，不能设置为INHERITED或者同义词NULL。默认是DEBUG。
+       <root>可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个loger。 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE-LOG" />
+        <appender-ref ref="ERROR-LOG" />
+        <appender-ref ref="INFO-LOG" />
+        <appender-ref ref="DEBUG-LOG" />
+    </root>
+</configuration>
